@@ -73,13 +73,11 @@ def post_create(request):
     error = ''
     form = PostForm(request.POST or None)
     if form.is_valid():
-        new_author = form.save(commit=False)
-        new_author.author = request.user
-        new_author.save()
-        form.save_m2m()
+        new_post = form.save(commit=False)
+        new_post.author = request.user
+        new_post.save()
+        form.save()
         return redirect('posts:profile', request.user.username)
-    else:
-        error = 'Форма заполнена неверно'
     form = PostForm()
     context = {
         'form': form,
@@ -92,7 +90,6 @@ def post_create(request):
 def post_edit(request, post_id):
     template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
-    is_edit = True
     if request.user != post.author:
         return redirect('posts:post_detail', post_id)
     form = PostForm(request.POST or None, instance=post)
@@ -101,6 +98,6 @@ def post_edit(request, post_id):
         return redirect('posts:post_detail', post_id)
     context = {
         'form': form,
-        'is_edit': is_edit,
+        'post_id': post_id,
     }
     return render(request, template, context)
