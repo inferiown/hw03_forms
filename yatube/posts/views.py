@@ -70,18 +70,19 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     template = 'posts/create_post.html'
-    error = ''
     form = PostForm(request.POST or None)
     if form.is_valid():
+        # Я не очень понимаю чем это лучше, чем
+        # то что было. Можешь объяснить, почему бестпрактис
+        # это создать новый объект формы, чтобы его сохранить?
+        # почему нельзя form.author = request.user
+        # а потом form.save() ?
         new_post = form.save(commit=False)
         new_post.author = request.user
         new_post.save()
-        form.save()
         return redirect('posts:profile', request.user.username)
-    form = PostForm()
     context = {
         'form': form,
-        'error': error,
     }
     return render(request, template, context)
 
