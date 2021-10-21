@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Пост {{ post_preview }}{% endblock %}
+{% block title %}Пост {{ post|stringformat:".30s" }}{% endblock %}
 {% block content %}
   <div class="row">
     <aside class="col-12 col-md-3">
@@ -34,7 +34,7 @@
       <p>
         {{ post.text }}
       </p>
-      {% if post.author.username == user.username %}
+      {% if post.author == user %}
       <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">
         редактировать запись
       </a>
